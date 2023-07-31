@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Upload and Processing</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <style>
+    /* Custom CSS to make the banner image full width */
+    .full-width-image {
+        width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">NutriFood</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end"> <!-- Updated to use justify-content-end -->
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+
+<img src="{{ url_for('uploaded_file', filename='img.jpg') }}" class="img-fluid full-width-image" alt="Full Width Banner Image">
+
+<div class="container mt-3">
+  <h3 class="mb-4">NutriFood - Your Food Nutritional Information Companion</h3>
+  <p>
+      NutriFood is a user-friendly web application designed to provide nutritional information for various food items.
+      The application allows users to upload images of food they wish to inquire about. It then utilizes image recognition
+      and a pre-trained machine learning model to identify the food item from the uploaded image. Once the food is identified,
+      the application fetches comprehensive nutritional details about the food, including calories, protein, carbohydrates,
+      fats, sugars, and more.
+  </p>
+  <p>
+      Whether you are tracking your daily nutritional intake, managing health conditions, or exploring new foods, NutriFood
+      is a reliable and indispensable companion for making healthier and more informed food choices.
+  </p>
+</div>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center">Upload Your Image</h3>
+          </div>
+          <div class="card-body">
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label for="imageInput" class="form-label">Choose an image</label>
+                <input type="file" class="form-control" id="imageInput" name="image" accept="image/*" capture="camera">
+              </div>
+              <div class="text-center">
+                <img src="#" alt="Uploaded Image" id="previewImage" class="img-thumbnail mt-3" style="display: none; max-width: 100%;">
+              </div>
+              <button type="submit" class="btn btn-primary mt-3">Upload</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (Make sure to include it at the end for faster page load) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Preview uploaded image and uploadImage function -->
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const previewImage = document.getElementById('previewImage');
+
+    function uploadImage() {
+      const input = document.getElementById('imageInput');
+      if (input.files && input.files[0]) {
+        const formData = new FormData();
+        formData.append('image', input.files[0]);
+
+        fetch('/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
+        })
+        .catch(error => console.error('Error occurred:', error));
+      }
+    }
+
+    imageInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function() {
+          previewImage.src = reader.result;
+          previewImage.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

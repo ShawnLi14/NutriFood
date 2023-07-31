@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ name }} Nutrition Facts</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">NutriFood</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end"> <!-- Updated to use justify-content-end -->
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+      </nav>
+
+    <div class="container">
+        <div class="jumbotron mt-3">
+            <h1 class="display-4">{{ name }}</h1>
+            <p class="lead">{{ description }}</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% if image %}
+                <img src="{{ url_for('uploaded_file', filename=image) }}" alt="Food Image" class="img-fluid">
+                {% else %}
+                <p>No image uploaded.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Nutrition Facts</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nutrient</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nutrient, amount in nutrition.items() %}
+                        {%
+                            set nutrient_output = {
+                                "name": "Name",
+                                "calories": "Calories",
+                                "serving_size_g": "Serving Size(g)",
+                                "fat_total_g": "Total Fat(g)",
+                                "fat_saturated_g": "Saturated Fat(g)",
+                                "protein_g": "Protein(g)",
+                                "sodium_mg": "Sodium(mg)",
+                                "potassium_mg": "Potassium(mg)",
+                                "cholesterol_mg": "Cholesterol(mg)",
+                                "carbohydrates_total_g": "Total Carbs(g)",
+                                "fiber_g": "Fiber(g)",
+                                "sugar_g": "Sugar(g)"
+                            }    
+                        %}
+                        <tr>
+                            <td>{{ nutrient_output[nutrient] }}</td>
+                            <td>{{ amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JavaScript (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
